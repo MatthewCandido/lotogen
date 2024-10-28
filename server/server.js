@@ -1,0 +1,172 @@
+const express = require('express');
+const cors = require('cors');
+const puppeteer = require('puppeteer');
+
+const app = express();
+const PORT = 5000;
+
+app.use(cors());
+app.use(express.json());
+
+const LOTOFACIL_URL = 'https://loterias.caixa.gov.br/Paginas/Lotofacil.aspx';
+
+// Função para obter os resultados usando Puppeteer
+const obterResultadosLotofacil = async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+
+  
+  await page.goto(LOTOFACIL_URL, { waitUntil: 'networkidle2' });
+
+  try {
+    await page.waitForSelector('.resultado-loteria li', { timeout: 60000 });
+
+    const resultados = await page.evaluate(() => {
+      const elementos = document.querySelectorAll('.resultado-loteria li');
+      const numeros = [];
+      elementos.forEach(element => {
+        const numero = parseInt(element.innerText.trim(), 10);
+        numeros.push(numero);
+      });
+      return numeros;
+    });
+
+    await browser.close();
+    return resultados;
+
+  } catch (error) {
+    console.error('Erro ao tentar capturar os resultados:', error);
+    await browser.close();
+    return [];
+  }
+};
+
+// Função recursiva para gerar combinações de 9 números
+const gerarCombinacoes = (arr, tamanho) => {
+  if (tamanho === 1) {
+    return arr.map(num => [num]);
+  }
+  const combinacoes = [];
+  arr.forEach((num, i) => {
+    const combinacoesRestantes = gerarCombinacoes(arr.slice(i + 1), tamanho - 1);
+    combinacoesRestantes.forEach(combinacao => {
+      combinacoes.push([num, ...combinacao]);
+    });
+  });
+  return combinacoes;
+};
+
+// Função para gerar combinações de 9 números
+const gerarCombinacoesDeNove = (numerosAnteriores) => {
+  return gerarCombinacoes(numerosAnteriores, 9);
+};
+
+// Funcao para gerar combinacoes de 6 numeros
+const gerarCombinacoesDeSeis = (numerosDisponiveis) => {
+  return gerarCombinacoes(numerosDisponiveis, 6);
+}
+
+// Função para gerar combinacoes de 6 números entre 1 e 25, excluindo os já selecionados
+const gerarFechamentoSeisNumeros = (excluidos) => {
+  const numerosDisponiveis = Array.from({ length: 25 }, (_, i) => i + 1)
+    .filter(num => !excluidos.includes(num)); // Remove os números já escolhidos
+  
+  const combinacoesNumerosRestantes = gerarCombinacoesDeSeis(numerosDisponiveis);
+
+  return combinacoesNumerosRestantes;
+};
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+function filterFechamento(fechamento, max) {
+  let odd = true;
+  let randomPosition = getRandomInt(max-1);
+  let result;
+  let skip = false;
+  let skipRound = 0;
+  let skipLimit = 2000;
+  
+  const skipInterval = 5;
+  
+  return fechamento.filter((numeros, index) => {
+    if (skip && skipRound <= skipLimit) {
+      skipRound++;
+      return false;
+    } else if (skipRound === skipLimit) {
+      skip = false;
+      skipRound = 0;
+      skipLimit = getRandomInt(1000);
+    }
+    
+    result = false;
+    if (odd && numeros[randomPosition] % 2 > 0) {
+      result = true;
+    } else if (!odd && numeros[randomPosition] % 2 === 0) {
+      result = true;
+    }
+
+    odd = !odd;
+    randomPosition = getRandomInt(max-1);
+
+    if (index === skipInterval-1) {
+      skip = true;
+    }
+
+    return result; 
+  })
+}
+
+// Rota para gerar todas as combinações possíveis
+app.get('/gerar-combinacoes', async (req, res) => {
+  const resultadosAnteriores = await obterResultadosLotofacil();
+  if (resultadosAnteriores.length < 15) {
+    return res.status(500).json({ error: 'Não foi possível obter resultados anteriores.' });
+  }
+
+  // Obtem combinações de 9 números dos 15 do sorteio anterior
+  let combinacoesDeNove = gerarCombinacoesDeNove(resultadosAnteriores);
+
+  // Obtém o parâmetro de limite de jogos da query string
+  const limiteJogos = parseInt(req.query.limite, 10) || combinacoesDeNove.length;
+
+  // Obtem o parametro de jogos com 9 numeros fixos ou nao
+  const jogosComNoveFixo = Boolean(eval(req.query.noveFixo)) || false;
+
+  // Obtem o parametro de limite de fechamentos
+  const limiteFechamento = parseInt(req.query.limiteFechamento, 10) || 10;
+
+  let jogos;
+
+  if (jogosComNoveFixo) {
+    const combinacaoFixa = combinacoesDeNove[getRandomInt(combinacoesDeNove.length)-1]
+    combinacoesDeNove = combinacoesDeNove.map(() => combinacaoFixa);
+
+    let fechamentoSeisNumeros = gerarFechamentoSeisNumeros(combinacaoFixa);
+    // fechamentoSeisNumeros = filterFechamento(fechamentoSeisNumeros, 6);
+    
+    // Limita a quantidade de jogos gerados
+    jogos = fechamentoSeisNumeros.slice(0, limiteJogos).map((seisNumeros) => {
+      return [...combinacaoFixa, ...seisNumeros];
+    });
+  } else {
+    // Limita a quantidade de jogos gerados
+    jogos = combinacoesDeNove.slice(0, limiteJogos).reduce((acc, combinacao) => {
+      let fechamentoSeisNumeros = gerarFechamentoSeisNumeros(combinacao);
+      // fechamentoSeisNumeros = filterFechamento(fechamentoSeisNumeros, 6);
+
+      fechamentoSeisNumeros.slice(0, limiteFechamento).forEach((seisNumeros) => {
+        acc.push([...combinacao, ...seisNumeros]);
+      });
+
+      return acc;
+    }, []);
+  }
+
+  res.json({ totalJogos: jogos.length, jogos }); // Inclui o número total de jogos gerados
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});

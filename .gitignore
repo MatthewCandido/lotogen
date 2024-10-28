@@ -1,0 +1,49 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Dependency directories
+**/node_modules
+
+# Server-side (e.g., if using Express.js)
+server/logs/
+server/.env
+server/node_modules/
+
+# Client-side (React)
+client/build/
+client/node_modules/
+client/.env.local
+client/.env.development
+client/.env.production
+
+# Testing
+coverage/
+
+# IDE/editor config files
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+
+# Optional npm cache directories
+.npm/
+
+# Optional eslint cache
+.eslintcache
