@@ -67,11 +67,11 @@ const gerarCombinacoesDeSeis = (numerosDisponiveis) => {
 }
 
 // Função para gerar combinacoes de 6 números entre 1 e 25, excluindo os já selecionados
-const gerarFechamentoSeisNumeros = (excluidos) => {
+const gerarFechamentoNumerosRestantes = (excluidos, limite) => {
   const numerosDisponiveis = Array.from({ length: 25 }, (_, i) => i + 1)
     .filter(num => !excluidos.includes(num)); // Remove os números já escolhidos
   
-  const combinacoesNumerosRestantes = gerarCombinacoesDeSeis(numerosDisponiveis);
+  const combinacoesNumerosRestantes = gerarCombinacoes(numerosDisponiveis, limite);
 
   return combinacoesNumerosRestantes;
 };
@@ -124,9 +124,12 @@ app.get('/gerar-combinacoes', async (req, res) => {
   if (resultadosAnteriores.length < 15) {
     return res.status(500).json({ error: 'Não foi possível obter resultados anteriores.' });
   }
+  
+  // Obtem o parametro de quantidade de numeros fixos
+  const qtdNumerosFixos = parseInt(req.query.qtdNumerosFixos, 10) || 9;
 
   // Obtem combinações de 9 números dos 15 do sorteio anterior
-  let combinacoesDeNove = gerarCombinacoesDeNove(resultadosAnteriores);
+  let combinacoesDeNove = gerarCombinacoes(resultadosAnteriores, qtdNumerosFixos);
 
   // Obtém o parâmetro de limite de jogos da query string
   const limiteJogos = parseInt(req.query.limite, 10) || combinacoesDeNove.length;
@@ -143,7 +146,7 @@ app.get('/gerar-combinacoes', async (req, res) => {
     const combinacaoFixa = combinacoesDeNove[getRandomInt(combinacoesDeNove.length)-1]
     combinacoesDeNove = combinacoesDeNove.map(() => combinacaoFixa);
 
-    let fechamentoSeisNumeros = gerarFechamentoSeisNumeros(combinacaoFixa);
+    let fechamentoSeisNumeros = gerarFechamentoNumerosRestantes(combinacaoFixa, 15-qtdNumerosFixos);
     // fechamentoSeisNumeros = filterFechamento(fechamentoSeisNumeros, 6);
     
     // Limita a quantidade de jogos gerados
@@ -153,7 +156,7 @@ app.get('/gerar-combinacoes', async (req, res) => {
   } else {
     // Limita a quantidade de jogos gerados
     jogos = combinacoesDeNove.slice(0, limiteJogos).reduce((acc, combinacao) => {
-      let fechamentoSeisNumeros = gerarFechamentoSeisNumeros(combinacao);
+      let fechamentoSeisNumeros = gerarFechamentoNumerosRestantes(combinacao, 15-qtdNumerosFixos);
       // fechamentoSeisNumeros = filterFechamento(fechamentoSeisNumeros, 6);
 
       fechamentoSeisNumeros.slice(0, limiteFechamento).forEach((seisNumeros) => {

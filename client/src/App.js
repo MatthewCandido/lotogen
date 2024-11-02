@@ -8,13 +8,14 @@ function App() {
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [noveFixo, setNoveFixo] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [qtdNumerosFixos, setQtdNumerosFixos] = useState(9);
   const jogosPorPagina = 5;
 
   const gerarJogos = async () => {
     setLoading(true);
     setJogos([]);
     try {
-      const response = await fetch(`http://localhost:5000/gerar-combinacoes?limite=${limiteJogos}&limiteFechamento=${limiteFechamento}&noveFixo=${noveFixo}`);
+      const response = await fetch(`http://localhost:5000/gerar-combinacoes?limite=${limiteJogos}&limiteFechamento=${limiteFechamento}&noveFixo=${noveFixo}&qtdNumerosFixos=${qtdNumerosFixos}`);
       if (!response.ok) {
         throw new Error('Erro ao gerar jogos');
       }
@@ -49,6 +50,15 @@ function App() {
             type="number"
             value={limiteFechamento}
             onChange={(e) => setLimiteFechamento(Number(e.target.value))}
+          />
+        </label>
+        <label>
+          Quantidade de numeros fixos:
+          <input
+            type="number"
+            value={qtdNumerosFixos}
+            max={14}
+            onChange={(e) => setQtdNumerosFixos(Number(e.target.value))}
           />
         </label>
         <label>
