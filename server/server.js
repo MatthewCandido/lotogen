@@ -38,7 +38,7 @@ const obterResultadosLotofacil = async () => {
   await page.goto(LOTOFACIL_URL, { waitUntil: 'networkidle2' });
 
   try {
-    // await page.waitForSelector('.resultado-loteria li', { timeout: 60000 });
+    await page.waitForSelector('.resultado-loteria li', { timeout: 60000 });
 
     const resultados = await page.evaluate(() => {
       const elementos = document.querySelectorAll('.resultado-loteria li');
