@@ -48,6 +48,8 @@ const obterResultadosLotofacil = async () => {
       return numeros;
     });
 
+	console.log(resultados);
+
     await browser.close();
     return resultados;
 
