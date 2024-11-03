@@ -4,6 +4,7 @@ const puppeteer = require('puppeteer');
 
 const app = express();
 const PORT = 5000;
+// && puppeteer browsers install chrome
 
 app.use(cors());
 app.use(express.json());
