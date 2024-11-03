@@ -15,6 +15,7 @@ const obterResultadosLotofacil = async () => {
   const browser = await puppeteer.launch({ 
 	headless: false,
 	args: ['--no-sandbox', '--disable-setuid-sandbox'],
+	executablePath: '/opt/render/project/src/server/.cache/puppeteer/chrome/linux-130.0.6723.58/chrome-linux64/chrome'
 });
   const page = await browser.newPage();
 
