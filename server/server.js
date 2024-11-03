@@ -26,11 +26,12 @@ const obterResultadosLotofacil = async () => {
 		'--disable-extensions',
 		'--disable-sync',
 		'--disable-translate',
+		'--remote-debugging-port=9222'
 	  ],
 	executablePath: '/opt/render/project/src/server/.cache/puppeteer/chrome/linux-130.0.6723.58/chrome-linux64/chrome'
 });
   const page = await browser.newPage();
-
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36');
   
   await page.goto(LOTOFACIL_URL, { waitUntil: 'networkidle2' });
 
