@@ -7,8 +7,14 @@ WORKDIR /usr/src/app
 # Copy the package.json and package-lock.json
 COPY package*.json ./
 
+# Temporarily switch to root user
+USER root
+
 # Install dependencies
 RUN npm install
+
+# Switch back to the default user
+USER chrome
 
 # Copy the rest of the application code
 COPY . .
