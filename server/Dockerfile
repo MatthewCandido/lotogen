@@ -30,7 +30,8 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-RUN npx puppeteer browsers install chrome
+# Install Chrome for Puppeteer
+RUN npx puppeteer install
 
 # Copy the rest of the application code
 COPY . .
