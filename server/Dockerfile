@@ -20,10 +20,10 @@ RUN apt-get update && apt-get install -y \
   libappindicator3-1 \
   fonts-liberation \
   --no-install-recommends && \
-  # Download and install Chrome
-  wget -qO- https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /usr/share/keyrings/chrome-archive-keyring.gpg && \
-  echo "deb [signed-by=/usr/share/keyrings/chrome-archive-keyring.gpg] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
-  apt-get update && apt-get install -y google-chrome-stable && \
+  # Download and install Google Chrome
+  wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+  dpkg -i /tmp/google-chrome.deb || apt-get -y -f install && \
+  rm -rf /tmp/google-chrome.deb && \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
