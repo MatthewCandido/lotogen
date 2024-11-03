@@ -14,7 +14,19 @@ const LOTOFACIL_URL = 'https://loterias.caixa.gov.br/Paginas/Lotofacil.aspx';
 const obterResultadosLotofacil = async () => {
   const browser = await puppeteer.launch({ 
 	headless: false,
-	args: ['--no-sandbox', '--disable-setuid-sandbox'],
+	args: [
+		'--no-sandbox',
+		'--disable-setuid-sandbox',
+		'--disable-dev-shm-usage',
+		'--disable-gpu',
+		'--no-zygote',
+		'--single-process',
+		'--disable-background-networking',
+		'--disable-default-apps',
+		'--disable-extensions',
+		'--disable-sync',
+		'--disable-translate',
+	  ],
 	executablePath: '/opt/render/project/src/server/.cache/puppeteer/chrome/linux-130.0.6723.58/chrome-linux64/chrome'
 });
   const page = await browser.newPage();
