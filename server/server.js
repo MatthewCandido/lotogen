@@ -40,6 +40,7 @@ const obterResultadosLotofacil = async () => {
 
     const resultados = await page.evaluate(() => {
       const elementos = document.querySelectorAll('.resultado-loteria li');
+	  console.log(`Elementos: ${elementos}`)
       const numeros = [];
       elementos.forEach(element => {
         const numero = parseInt(element.innerText.trim(), 10);
