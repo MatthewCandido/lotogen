@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	libatk-bridge2.0-0 \
 	libatk1.0-0 \
 	libcups2 \
-	libdbus-1-3 \
+	# libdbus-1-3 \
 	libgdk-pixbuf2.0-0 \
 	libnspr4 \
 	libxcomposite1 \
@@ -27,16 +27,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	rm -rf /var/lib/apt/lists/*
 
 # Install DBus
-RUN apt-get update && apt-get install -y dbus
+#RUN apt-get update && apt-get install -y dbus
+
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Generate a unique machine ID for DBus
-RUN dbus-uuidgen > /etc/machine-id
+#RUN dbus-uuidgen > /etc/machine-id
 
 # Create the run directory for DBus
-RUN mkdir -p /var/run/dbus
+#RUN mkdir -p /var/run/dbus
 
 # Start the DBus daemon
-RUN dbus-daemon --system --fork
+#RUN dbus-daemon --system --fork
 
 # Set the working directory in the container
 WORKDIR /usr/src/app
