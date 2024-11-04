@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const puppeteer = require('puppeteer');
+require("dotenv").config();
 
 const app = express();
 const PORT = 5000;
@@ -16,15 +17,16 @@ const obterResultadosLotofacil = async () => {
   const browser = await puppeteer.launch({ 
 	headless: true,
 	args: [
-		'--no-sandbox',
-		'--disable-setuid-sandbox',
-		'--disable-dev-shm-usage', // Use /dev/shm to prevent out-of-memory errors
-		'--disable-extensions',
-		'--disable-gpu',
-		'--no-zygote',
-		'--single-process'
+		"--disable-setuid-sandbox",
+		"--no-sandbox",
+		"--single-process",
+		"--no-zygote",
 	  ],
-	  dumpio: true
+	  executablePath:
+		process.env.NODE_ENV === "production"
+		  ? process.env.PUPPETEER_EXECUTABLE_PATH
+		  : puppeteer.executablePath(),
+	  dumpio: true,
 	// executablePath: '/opt/render/project/src/server/.cache/puppeteer/chrome/linux-130.0.6723.58/chrome-linux64/chrome'
 });
   const page = await browser.newPage();
