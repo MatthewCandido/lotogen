@@ -19,9 +19,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	dbus \
 	x11-xserver-utils \
 	libglib2.0-0 \
-	libnss3 \
-	libxss1 \
-	libasound2 \
 	xdg-utils \
 	libappindicator3-1 \
 	fonts-liberation && \
@@ -43,11 +40,15 @@ COPY package*.json ./
 RUN npm install
 
 # Set the PUPPETEER_EXECUTABLE_PATH environment variable
-#ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
 
 # Copy the rest of the application code
 COPY . .
 
+# Ensure the script is executable
+RUN chmod +x render-build.sh
+
+# Run the build script (if necessary)
 RUN ./render-build.sh
 
 # Expose the port the app runs on
