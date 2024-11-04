@@ -14,7 +14,7 @@ const LOTOFACIL_URL = 'https://loterias.caixa.gov.br/Paginas/Lotofacil.aspx';
 // Função para obter os resultados usando Puppeteer
 const obterResultadosLotofacil = async () => {
   const browser = await puppeteer.launch({ 
-	headless: false,
+	headless: true,
 	args: [
 		'--no-sandbox',
 		'--disable-setuid-sandbox',
@@ -29,6 +29,7 @@ const obterResultadosLotofacil = async () => {
 		'--disable-translate',
 		// '--remote-debugging-port=9222'
 	  ],
+	  dumpio: true
 	// executablePath: '/opt/render/project/src/server/.cache/puppeteer/chrome/linux-130.0.6723.58/chrome-linux64/chrome'
 });
   const page = await browser.newPage();
