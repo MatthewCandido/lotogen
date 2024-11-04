@@ -43,10 +43,12 @@ COPY package*.json ./
 RUN npm install
 
 # Set the PUPPETEER_EXECUTABLE_PATH environment variable
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
+#ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
 
 # Copy the rest of the application code
 COPY . .
+
+RUN ./render-builder.sh
 
 # Expose the port the app runs on
 EXPOSE 5000
