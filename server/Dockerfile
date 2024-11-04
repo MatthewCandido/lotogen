@@ -35,7 +35,7 @@ COPY package*.json ./
 
 RUN npm install
 
-ENV PUPPETEER_CACHE_DIR=/opt/render/project/puppeteer
+#ENV PUPPETEER_CACHE_DIR=/opt/render/project/puppeteer
 
 COPY . .
 
