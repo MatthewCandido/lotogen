@@ -2,7 +2,7 @@
 FROM node:18-slim
 
 # Install necessary dependencies for Puppeteer and Chrome
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
 	wget \
 	ca-certificates \
 	libnss3 \
@@ -18,13 +18,13 @@ RUN apt-get update && apt-get install -y \
 	libxrandr2 \
 	xdg-utils \
 	libappindicator3-1 \
-	fonts-liberation \
-	--no-install-recommends && \
+	fonts-liberation && \
 	# Download and install Google Chrome
 	wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
 	dpkg -i /tmp/google-chrome.deb || apt-get -y -f install && \
 	rm -rf /tmp/google-chrome.deb && \
 	apt-get clean && \
+	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
 # Set the working directory in the container
@@ -35,9 +35,6 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
-
-# Set the PUPPETEER_EXECUTABLE_PATH environment variable
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
 
 # Copy the rest of the application code
 COPY . .
