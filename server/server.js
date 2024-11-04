@@ -25,7 +25,7 @@ const obterResultadosLotofacil = async () => {
 	  executablePath:
 		process.env.NODE_ENV === "production"
 		  ? process.env.PUPPETEER_EXECUTABLE_PATH
-		  : puppeteer.executablePath(),
+		  : process.env.PUPPETEER_EXECUTABLE_PATH,
 	  dumpio: true,
 	// executablePath: '/opt/render/project/src/server/.cache/puppeteer/chrome/linux-130.0.6723.58/chrome-linux64/chrome'
 });
