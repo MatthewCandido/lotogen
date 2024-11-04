@@ -36,6 +36,9 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+# Set the PUPPETEER_EXECUTABLE_PATH environment variable
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
+
 # Copy the rest of the application code
 COPY . .
 
