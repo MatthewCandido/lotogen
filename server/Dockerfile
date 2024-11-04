@@ -29,6 +29,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
+RUN dbus-uuidgen > /etc/machine-id
+
 WORKDIR /usr/src/app
 
 COPY package*.json ./
