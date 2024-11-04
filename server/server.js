@@ -21,6 +21,8 @@ const obterResultadosLotofacil = async () => {
 		"--no-sandbox",
 		"--single-process",
 		"--no-zygote",
+		"--disable-gpu",
+		"--disable-software-rasterizer"
 	  ],
 	  executablePath:
 		process.env.NODE_ENV === "production"
