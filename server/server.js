@@ -17,17 +17,17 @@ const obterResultadosLotofacil = async () => {
 	headless: 'new',
 	args: [
 		'--no-sandbox',
-		'--disable-setuid-sandbox',
-		'--disable-dev-shm-usage',
-		'--disable-gpu',
-		'--no-zygote',
-		'--single-process',
-		'--disable-background-networking',
-		'--disable-default-apps',
-		'--disable-extensions',
-		'--disable-sync',
-		'--disable-translate',
-		// '--remote-debugging-port=9222'
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-zygote',
+        '--single-process',
+        '--disable-background-networking',
+        '--disable-default-apps',
+        '--disable-extensions',
+        '--disable-sync',
+        '--disable-translate',
+        '--remote-debugging-port=9222'
 	  ],
 	  dumpio: true
 	// executablePath: '/opt/render/project/src/server/.cache/puppeteer/chrome/linux-130.0.6723.58/chrome-linux64/chrome'
