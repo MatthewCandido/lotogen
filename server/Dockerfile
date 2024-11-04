@@ -16,6 +16,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	libnspr4 \
 	libxcomposite1 \
 	libxrandr2 \
+	dbus \
+	x11-xserver-utils \
+	libglib2.0-0 \
+	libnss3 \
+	libxss1 \
+	libasound2 \
 	xdg-utils \
 	libappindicator3-1 \
 	fonts-liberation && \
