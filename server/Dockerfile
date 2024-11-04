@@ -48,7 +48,7 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-RUN ./render-builder.sh
+RUN ./render-build.sh
 
 # Expose the port the app runs on
 EXPOSE 5000
