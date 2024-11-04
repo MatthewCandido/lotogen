@@ -28,6 +28,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
+# Install DBus
+RUN apt-get update && apt-get install -y dbus
+
+# Generate a unique machine ID for DBus
+RUN dbus-uuidgen > /etc/machine-id
+
+# Create the run directory for DBus
+RUN mkdir -p /var/run/dbus
+
+# Start the DBus daemon
+RUN dbus-daemon --system --fork
+
+
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
