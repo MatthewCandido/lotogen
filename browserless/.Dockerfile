@@ -10,4 +10,4 @@ ENV MAX_CONCURRENT_SESSIONS=10
 EXPOSE 3000
 
 # Default command (browserless base image should handle this)
-CMD ["node", "index.js"]
+CMD ["node", "server.js"]
