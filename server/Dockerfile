@@ -31,6 +31,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN dbus-uuidgen > /etc/machine-id
 
+
+RUN mkdir -p /var/run/dbus
+
+RUN dbus-daemon --config-file=/usr/share/dbus-1/system.conf --print-address
+
 WORKDIR /usr/src/app
 
 COPY package*.json ./
