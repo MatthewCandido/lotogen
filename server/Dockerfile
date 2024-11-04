@@ -1,5 +1,5 @@
-# Use the official Node.js 18 image as the base image
-FROM node:22
+# Use the official Node.js 18 image as the base image (adjust if Node.js 22 is required)
+FROM node:18
 
 # Install necessary dependencies for Puppeteer and Chrome
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -16,7 +16,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	libnspr4 \
 	libxcomposite1 \
 	libxrandr2 \
-	dbus \
 	x11-xserver-utils \
 	libglib2.0-0 \
 	xdg-utils \
@@ -29,29 +28,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
-RUN dbus-uuidgen > /etc/machine-id
-
-ENV DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
-
-RUN mkdir -p /var/run/dbus
-
-RUN dbus-daemon --config-file=/usr/share/dbus-1/system.conf --print-address
-
+# Set the working directory in the container
 WORKDIR /usr/src/app
 
+# Copy package.json and install dependencies
 COPY package*.json ./
-
 RUN npm install
 
-#ENV PUPPETEER_CACHE_DIR=/opt/render/project/puppeteer
-
+# Copy the rest of the application code
 COPY . .
 
+# Make sure your script is executable
 RUN chmod +x render-build.sh
 
-# Run the script with error trapping for debugging
+# Run your build script
 RUN ./render-build.sh || (echo "Debug Info: render-build.sh failed" && exit 1)
 
+# Expose the port the app runs on
 EXPOSE 5000
 
+# Start the application
 CMD ["node", "server.js"]

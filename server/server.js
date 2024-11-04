@@ -18,10 +18,11 @@ const obterResultadosLotofacil = async () => {
 	args: [
 		'--no-sandbox',
 		'--disable-setuid-sandbox',
-		'--disable-dev-shm-usage',
+		'--disable-dev-shm-usage', // Use /dev/shm to prevent out-of-memory errors
 		'--disable-extensions',
 		'--disable-gpu',
-		'--no-zygote'
+		'--no-zygote',
+		'--single-process'
 	  ],
 	  dumpio: true
 	// executablePath: '/opt/render/project/src/server/.cache/puppeteer/chrome/linux-130.0.6723.58/chrome-linux64/chrome'
