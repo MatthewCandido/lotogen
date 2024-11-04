@@ -31,6 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN dbus-uuidgen > /etc/machine-id
 
+ENV DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
 
 RUN mkdir -p /var/run/dbus
 
