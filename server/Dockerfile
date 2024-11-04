@@ -1,5 +1,5 @@
 # Use the official Node.js 18 image as the base image
-FROM node:18
+FROM node:22
 
 # Install necessary dependencies for Puppeteer and Chrome
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -35,7 +35,6 @@ COPY package*.json ./
 
 RUN npm install
 
-#ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
 ENV PUPPETEER_CACHE_DIR=/opt/render/project/puppeteer
 
 COPY . .
