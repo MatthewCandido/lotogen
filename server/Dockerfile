@@ -22,7 +22,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	xdg-utils \
 	libappindicator3-1 \
 	fonts-liberation && \
-	# Download and install Google Chrome
 	wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
 	dpkg -i /tmp/google-chrome.deb || apt-get -y -f install && \
 	rm -rf /tmp/google-chrome.deb && \
@@ -30,29 +29,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
-# Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copy the package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
 RUN npm install
 
-# Set the PUPPETEER_EXECUTABLE_PATH environment variable
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
 
-# Copy the rest of the application code
 COPY . .
 
-# Ensure the script is executable
 RUN chmod +x render-build.sh
 
-# Run the build script (if necessary)
-RUN ./render-build.sh
+# Run the script with error trapping for debugging
+RUN ./render-build.sh || (echo "Debug Info: render-build.sh failed" && exit 1)
 
-# Expose the port the app runs on
 EXPOSE 5000
 
-# Start the application
 CMD ["node", "server.js"]
