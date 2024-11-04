@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+    # Browserless service for headless Chrome
+    browserless:
+        image: ghcr.io/browserless/base:latest
+        container_name: browserless
+        ports:
+            - '3000:3000' # Expose port 3000 for browserless API
+        environment:
+            - PREBOOT_CHROME=true # Optional: Preboot Chrome instances for better performance
+    lotogen_backend:
+        build:
+            context: . # Build from the current directory
+            dockerfile: Dockerfile # Specify the Dockerfile
+        container_name: lotogen-backend
+        ports:
+            - '5000:8080' # Expose port 8080 (adjust as needed)
+        depends_on:
+            - browserless # Ensure browserless starts before your app
+        environment:
+            # Add any environment variables your app needs
+            - NODE_ENV=production
+        volumes:
+            - .:/usr/src/app # Mount the current directory to the container (adjust if needed)
