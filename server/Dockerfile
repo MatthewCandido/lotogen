@@ -1,7 +1,7 @@
 # Use the official Node.js 18 image as the base image (adjust if Node.js 22 is required)
 FROM node:18
 
-# Install necessary dependencies for Puppeteer and Chrome
+# Install necessary dependencies for Puppeteer and Chromium
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	wget \
 	ca-certificates \
@@ -20,10 +20,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	libglib2.0-0 \
 	xdg-utils \
 	libappindicator3-1 \
-	fonts-liberation && \
-	wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-	dpkg -i /tmp/google-chrome.deb || apt-get -y -f install && \
-	rm -rf /tmp/google-chrome.deb && \
+	fonts-liberation \
+	chromium && \
 	apt-get clean && \
 	apt-get autoremove && \
 	rm -rf /var/lib/apt/lists/*
@@ -39,7 +37,6 @@ RUN mkdir -p /var/run/dbus
 
 # Start the DBus daemon
 RUN dbus-daemon --system --fork
-
 
 # Set the working directory in the container
 WORKDIR /usr/src/app
