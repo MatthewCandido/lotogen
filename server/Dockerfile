@@ -35,7 +35,8 @@ COPY package*.json ./
 
 RUN npm install
 
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
+#ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
+ENV PUPPETEER_CACHE_DIR=/opt/render/project/puppeteer
 
 COPY . .
 
