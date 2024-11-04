@@ -25,34 +25,36 @@ const obterResultadosLotofacil = async () => {
 	  executablePath:
 		process.env.NODE_ENV === "production"
 		  ? process.env.PUPPETEER_EXECUTABLE_PATH
-		  : process.env.PUPPETEER_EXECUTABLE_PATH,
+		  : puppeteer.executablePath(),
 	  dumpio: true,
 	// executablePath: '/opt/render/project/src/server/.cache/puppeteer/chrome/linux-130.0.6723.58/chrome-linux64/chrome'
 });
-  const page = await browser.newPage();
-  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36');
-  await page.setViewport({ width: 1280, height: 800 });
-  
-  await page.goto(LOTOFACIL_URL, { waitUntil: 'networkidle2' });
+try {
+    const page = await browser.newPage();
 
-  try {
-    await page.waitForSelector('.resultado-loteria li', { timeout: 60000 });
+    await page.goto("https://developer.chrome.com/");
 
-    const resultados = await page.evaluate(() => {
-      const elementos = document.querySelectorAll('.resultado-loteria li');
-	  console.log(`Elementos: ${elementos}`)
-      const numeros = [];
-      elementos.forEach(element => {
-        const numero = parseInt(element.innerText.trim(), 10);
-        numeros.push(numero);
-      });
-      return numeros;
-    });
+    // Set screen size
+    await page.setViewport({ width: 1080, height: 1024 });
 
-	console.log(resultados);
+    // Type into search box
+    await page.type(".search-box__input", "automate beyond recorder");
 
-    await browser.close();
-    return resultados;
+    // Wait and click on first result
+    const searchResultSelector = ".search-box__link";
+    await page.waitForSelector(searchResultSelector);
+    await page.click(searchResultSelector);
+
+    // Locate the full title with a unique string
+    const textSelector = await page.waitForSelector(
+      "text/Customize and automate"
+    );
+    const fullTitle = await textSelector.evaluate((el) => el.textContent);
+
+    // Print the full title
+    const logStatement = `The title of this blog post is ${fullTitle}`;
+    console.log(logStatement);
+    return logStatement;
 
   } catch (error) {
     console.error('Erro ao tentar capturar os resultados:', error);
