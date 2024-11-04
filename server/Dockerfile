@@ -1,5 +1,5 @@
 # Use the official Node.js 18 image as the base image
-FROM node:18-slim
+FROM node:18
 
 # Install necessary dependencies for Puppeteer and Chrome
 RUN apt-get update && apt-get install -y --no-install-recommends \
