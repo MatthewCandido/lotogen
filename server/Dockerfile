@@ -12,8 +12,17 @@ RUN apt-get update && apt-get install gnupg wget -y && \
 	apt-get install google-chrome-stable -y --no-install-recommends && \
 	rm -rf /var/lib/apt/lists/*
 
+# Install latest chrome dev package and fonts to support major charsets (Chinese, Japanese, Arabic, Hebrew, Thai and a few others)
+# Note: this installs the necessary libs to make the bundled version of Chrome that Puppeteer
+# installs, work.
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-khmeros \
+	fonts-kacst fonts-freefont-ttf dbus dbus-x11
+
 # Set the working directory
 WORKDIR /usr/src/app
+
+RUN npx puppeteer browsers install chrome --install-deps
 
 # Copy package files and install dependencies
 COPY package*.json ./
