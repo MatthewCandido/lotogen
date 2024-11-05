@@ -14,25 +14,25 @@ const LOTOFACIL_URL = 'https://loterias.caixa.gov.br/Paginas/Lotofacil.aspx';
 
 // Função para obter os resultados usando Puppeteer
 const obterResultadosLotofacil = async () => {
-//   const browser = await puppeteer.launch({ 
-// 	headless: true,
-// 	args: [
-// 		"--disable-setuid-sandbox",
-// 		"--no-sandbox",
-// 		"--single-process",
-// 		"--no-zygote",
-// 	  ],
-// 	  executablePath:
-// 		process.env.NODE_ENV === "production"
-// 		  ? process.env.PUPPETEER_EXECUTABLE_PATH
-// 		  : puppeteer.executablePath(),
-// 	  dumpio: true,
-// 	// executablePath: '/opt/render/project/src/server/.cache/puppeteer/chrome/linux-130.0.6723.58/chrome-linux64/chrome'
-// });
 	try {
-		const browser = await puppeteer.connect({
-			browserWSEndpoint: 'ws://browserless-xc3x.onrender.com',
-		  });
+		const browser = await puppeteer.launch({ 
+			headless: true,
+			args: [
+				"--disable-setuid-sandbox",
+				"--no-sandbox",
+				"--single-process",
+				"--no-zygote",
+			  ],
+			//   executablePath:
+			// 	process.env.NODE_ENV === "production"
+			// 	  ? process.env.PUPPETEER_EXECUTABLE_PATH
+			// 	  : puppeteer.executablePath(),
+			  dumpio: true,
+			  executablePath: '/usr/bin/google-chrome',
+		});
+		// const browser = await puppeteer.connect({
+		// 	browserWSEndpoint: 'ws://browserless-xc3x.onrender.com',
+		//   });
   		const page = await browser.newPage();
 //   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36');
   
