@@ -23,7 +23,7 @@ const obterResultadosLotofacil = async () => {
 				'--disable-dev-shm-usage',
 				'--disable-software-rasterizer',
 				'--single-process',
-				'--proxy-server=http://47.88.59.79:82'
+				'--proxy-server=http://proxy.oculus-proxy.com:31112'
 			  ],
 			//   executablePath:
 			// 	process.env.NODE_ENV === "production"
