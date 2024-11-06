@@ -14,14 +14,16 @@ const LOTOFACIL_URL = 'https://loterias.caixa.gov.br/Paginas/Lotofacil.aspx';
 
 // Função para obter os resultados usando Puppeteer
 const obterResultadosLotofacil = async () => {
+	let browser;
 	try {
-		const browser = await puppeteer.launch({ 
+		browser = await puppeteer.launch({ 
 			headless: true,
 			args: [
-				"--disable-setuid-sandbox",
-				"--no-sandbox",
-				"--single-process",
-				"--no-zygote",
+				'--disable-gpu',
+				'--disable-dev-shm-usage',
+				'--disable-software-rasterizer',
+				'--single-process',
+				'--proxy-server=http://47.88.59.79:82'
 			  ],
 			//   executablePath:
 			// 	process.env.NODE_ENV === "production"
@@ -33,11 +35,64 @@ const obterResultadosLotofacil = async () => {
 		// const browser = await puppeteer.connect({
 		// 	browserWSEndpoint: 'ws://browserless-xc3x.onrender.com',
 		//   });
-  		const page = await browser.newPage();
+  		let page;
+
+		  
+		  
 //   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36');
   
 //, { waitUntil: 'networkidle2' }
-		await page.goto(LOTOFACIL_URL);
+		try {
+			const navigateWithRetry = async (page, url) => {
+				let attempts = 10;
+				while (attempts > 0) {
+				  try {
+					page = await browser.newPage();
+
+					await page.setRequestInterception(true);
+					page.on('request', (request) => {
+						console.log(request.resourceType())
+						if (['image', 'stylesheet', 'font'].includes(request.resourceType())) {
+							request.abort();
+						} else {
+							request.continue();
+						}
+					});
+
+					page.on('framenavigated', (frame) => {
+						console.log(`Navigated: ${frame.url()}`);
+					  });
+					  page.on('error', (err) => {
+						console.error('Page error:', err);
+					  });
+					  page.on('requestfailed', (req) => {
+						console.error('Request failed:', req.url());
+					  });
+					await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+					return;
+				  } catch (error) {
+					if (['Connection closed', 'Navigating frame was detached'].includes(error.message)) {
+					  console.warn('Frame detached. Retrying...');
+					  attempts -= 1;
+					} else {
+					  throw error;
+					}
+				  }
+				}
+				throw new Error('Failed to navigate to page after multiple attempts');
+			  };
+			  
+			  await navigateWithRetry(page, LOTOFACIL_URL);
+			  
+			// await page.goto(LOTOFACIL_URL, { waitUntil: 'networkidle2' });
+		} catch (error) {
+			if (error.message.includes('Target closed')) {
+			console.error('Browser or page was closed unexpectedly.');
+			return [];
+			} else {
+			throw error;
+			}
+		}
 		await page.setViewport({ width: 1080, height: 1024 });
     	await page.waitForSelector('.resultado-loteria li', { timeout: 60000 });
 
