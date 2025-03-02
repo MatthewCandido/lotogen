@@ -29,4 +29,5 @@ COPY --chown=pptruser . .
 EXPOSE 3000
 
 # Start dbus and run the app
-CMD service dbus start && node server.js
+# CMD service dbus start && node server.js
+CMD node server.js
