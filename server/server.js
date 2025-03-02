@@ -30,7 +30,7 @@ const obterResultadosLotofacil = async () => {
 			// 	  ? process.env.PUPPETEER_EXECUTABLE_PATH
 			// 	  : puppeteer.executablePath(),
 			  dumpio: true,
-			  executablePath: '/usr/bin/google-chrome',
+			  executablePath: puppeteer.executablePath(), // Use Puppeteer's bundled browser
 		});
 		// const browser = await puppeteer.connect({
 		// 	browserWSEndpoint: 'ws://browserless-xc3x.onrender.com',
