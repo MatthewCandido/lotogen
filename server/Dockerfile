@@ -7,14 +7,23 @@ WORKDIR /app
 # Switch to root user to perform necessary operations
 USER root
 
-# Install Google Chrome (stable)
-RUN apt-get update && apt-get install -y \
+# Install necessary dependencies
+RUN apt-get update \
+	&& apt-get install -y \
 	wget \
 	curl \
 	gnupg2 \
-	&& wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-	&& echo "deb [signed-by=/usr/share/keyrings/google-archive-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-	&& apt-get update \
+	ca-certificates \
+	sudo
+
+# Add Google’s updated GPG key
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | tee /etc/apt/trusted.gpg.d/google.asc > /dev/null
+
+# Add the Google Chrome repository
+RUN echo "deb [signed-by=/etc/apt/trusted.gpg.d/google.asc] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+
+# Install Google Chrome
+RUN apt-get update \
 	&& apt-get install -y google-chrome-stable
 
 # Set ownership of the app folder
