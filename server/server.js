@@ -200,7 +200,7 @@ function filterFechamento(fechamento, max) {
 app.get('/gerar-combinacoes', async (req, res) => {
   const resultadosAnteriores = await obterResultadosLotofacil();
   if (resultadosAnteriores.length < 15) {
-    return res.status(500).json({ error: 'Não foi possível obter resultados anteriores.' });
+    return res.status(500).json({ error: 'Não foi possível obter resultados anteriores.', resultadosAnteriores });
   }
   
   // Obtem o parametro de quantidade de numeros fixos
